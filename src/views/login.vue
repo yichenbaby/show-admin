@@ -25,6 +25,7 @@
 </template>
 <script>
 import axios from "axios";
+import { async } from "q";
 export default {
   data() {
     return {
@@ -63,25 +64,38 @@ export default {
     };
   },
   methods: {
+    // submitForm(formName) {
+    //   this.$refs[formName].validate(valid => {
+    //     if (valid) {
+    //       // alert("submit!");
+    //       axios({
+    //         url: "http://localhost:8888/api/private/v1/login",
+    //         method: "post",
+    //         data: this.form
+    //       }).then(({ data: { data, meta } }) => {
+    //         // console.log(meta);
+    //         if (meta.status === 200) {
+    //           localStorage.setItem("token", data.token);
+    //           this.$router.push("/home");
+    //         }
+    //       });
+    //     } else {
+    //       // console.log("error submit!!");
+    //       // return false;
+    //     }
+    //   });
+    // }
     submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          // alert("submit!");
-          axios({
-            url: "http://localhost:8888/api/private/v1/login",
-            method: "post",
-            data: this.form
-          }).then(({ data: { data, meta } }) => {
-            // console.log(meta);
-            if (meta.status === 200) {
-              localStorage.setItem("token", data.token);
-              this.$router.push("/home");
-            }
-          });
-        } else {
-          // console.log("error submit!!");
-          // return false;
-        }
+      this.$refs[formName].validate(async valid => {
+        let {
+          data: { data, meta }
+        } = await axios({
+          url: "http://localhost:8888/api/private/v1/login",
+          method: "post",
+          data: this.form
+        });
+        localStorage.setItem("token", data.token);
+        this.$router.push("/home");
       });
     }
     // resetForm(formName) {
